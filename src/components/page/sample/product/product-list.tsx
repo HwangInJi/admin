@@ -1,21 +1,21 @@
-import { IProduct, useProducts } from "@/client/sample/product";
 import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
-import { ISO8601DateTime } from "@/types/common";
-import { Alert, Button, Dropdown, MenuProps, Popconfirm } from "antd";
+import { Button, Dropdown, MenuProps, Popconfirm } from "antd";
 import { ColumnsType } from "antd/es/table";
-import dayjs from "dayjs";
 import { Download } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import numeral from "numeral";
 import React, { useCallback, useMemo, useState } from "react";
+import productData from '../../../../pages/api/sample/products/nail_shops.json'; // JSON 데이터 가져오기
 
 const ProductList = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
 
-  const { data, error, isLoading } = useProducts({ page: router.query.page ? Number(router.query.page) : 1 });
+  // JSON 데이터를 items와 totalCount로 분리
+  const items = productData;
+  const totalCount = productData.length;
 
   const handleChangePage = useCallback(
     (pageNumber: number) => {
@@ -47,12 +47,12 @@ const ProductList = () => {
   };
   const hasSelected = selectedRowKeys.length > 0;
 
-  const columns: ColumnsType<IProduct> = [
+  const columns: ColumnsType<any> = [
     {
       key: "action",
       width: 120,
       align: "center",
-      render: (_value: unknown, record: IProduct) => {
+      render: (_value: unknown, record: any) => {
         return (
           <span className="flex justify-center gap-2">
             <Link href={`/sample/product/edit/${record.id}`} className="px-2 py-1 text-sm btn">
@@ -72,69 +72,74 @@ const ProductList = () => {
     },
     {
       title: "업체명",
-      dataIndex: "code",
+      dataIndex: "title",
       width: 100,
     },
     {
       title: "업체주소",
-      dataIndex: "name",
-      render: (value: string, record: IProduct) => {
+      dataIndex: "addresses",
+      render: (value: string, record: any) => {
         return (
-          <span>
-            <span className="px-2 py-1 mr-1 bg-gray-100 rounded">{record.brand}</span>
+          <span className="w-4/12">
+            {/* <span className="px-2 py-1 mr-1 bg-gray-100 rounded"></span> */}
             <span>{value}</span>
           </span>
         );
       },
     },
     {
-      title: "금액",
-      dataIndex: "price",
+      title: "영업분류",
+      dataIndex: "category",
+      align: "center",
+      width: 100,
+    },
+    {
+      title: "방문자 리뷰수",
+      dataIndex: "human_review",
       align: "center",
       width: 100,
       render: (value: number) => {
-        return <p>{numeral(value).format("0,0")}원</p>;
+        return <p>{numeral(value).format("0,0")}건</p>;
       },
     },
     {
-      title: "영업상태",
-      dataIndex: "status",
+      title: "블로그 리뷰수",
+      dataIndex: "blog_review",
       align: "center",
       width: 100,
-    },
-    {
-      title: "오픈일시",
-      dataIndex: "createdAt",
-      align: "center",
-      width: 120,
-      render: (value: ISO8601DateTime) => {
-        return (
-          <div className="text-sm">
-            <span className="block">{dayjs(value).format("YYYY/MM/DD")}</span>
-            <span className="block">{dayjs(value).format("hh:mm")}</span>
-          </div>
-        );
+      render: (value: number) => {
+        return <p>{numeral(value).format("0,0")}건</p>;
       },
     },
     {
-      title: "종료일시",
-      dataIndex: "updatedAt",
+      title: "X좌표",
+      dataIndex: "x",
       align: "center",
       width: 120,
-      render: (value: ISO8601DateTime) => {
-        return (
-          <div className="text-sm">
-            <span className="block">{dayjs(value).format("YYYY/MM/DD")}</span>
-            <span className="block">{dayjs(value).format("hh:mm")}</span>
-          </div>
-        );
-      },
+      // render: (value: string) => {
+      //   return (
+      //     <div className="text-sm">
+      //       <span className="block">{value ? dayjs(value).format("YYYY/MM/DD") : "N/A"}</span>
+      //       <span className="block">{value ? dayjs(value).format("hh:mm") : "N/A"}</span>
+      //     </div>
+      //   );
+      // },
+    },
+    {
+      title: "Y좌표",
+      dataIndex: "y",
+      align: "center",
+      width: 120,
+      // render: (value: string) => {
+      //   return (
+      //     <div className="text-sm">
+      //       <span className="block">{value ? dayjs(value).format("YYYY/MM/DD") : "N/A"}</span>
+      //       <span className="block">{value ? dayjs(value).format("hh:mm") : "N/A"}</span>
+      //     </div>
+      //   );
+      // },
     },
   ];
-
-  if (error) {
-    return <Alert message="데이터 로딩 중 오류가 발생했습니다." type="warning" />;
-  }
 
   return (
     <>
@@ -157,20 +162,19 @@ const ProductList = () => {
         </div>
       </DefaultTableBtn>
 
-      <DefaultTable<IProduct>
+      <DefaultTable<any>
         rowSelection={rowSelection}
         columns={columns}
-        dataSource={data?.data.items || []}
-        loading={isLoading}
+        dataSource={items}
         pagination={{
           current: Number(router.query.page || 1),
-          defaultPageSize: 5,
-          total: data?.data.page.totalCount || 0,
+          defaultPageSize: 50,
+          total: totalCount,
           showSizeChanger: false,
           onChange: handleChangePage,
         }}
         className="mt-3"
-        countLabel={data?.data.page.totalCount}
+        countLabel={totalCount}
       />
     </>
   );

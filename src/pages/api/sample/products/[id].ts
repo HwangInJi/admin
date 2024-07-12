@@ -27,7 +27,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     if (!item) {
       return res.status(400).json({
         code: -1,
-        message: "상품 정보를 찾을 수 없습니다.",
+        message: "업체 정보를 찾을 수 없습니다.",
         data: {},
       });
     }

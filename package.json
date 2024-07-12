@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.16.1",
+    "@types/jest": "^29.5.12",
     "@uiw/react-codemirror": "^4.21.9",
     "antd": "^5.7.3",
     "dayjs": "^1.11.9",
@@ -29,11 +30,11 @@
     "swr": "^2.2.0"
   },
   "devDependencies": {
-    "@types/node": "18.11.18",
+    "@types/node": "^18.11.18",
     "@types/numeral": "^2.0.2",
     "@types/qs": "^6.9.7",
-    "@types/react": "18.2.17",
-    "@types/react-dom": "18.2.7",
+    "@types/react": "^18.2.17",
+    "@types/react-dom": "^18.2.7",
     "autoprefixer": "^10.4.14",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.12",
@@ -41,6 +42,6 @@
     "postcss": "^8.4.27",
     "prettier": "^3.0.0",
     "tailwindcss": "^3.3.3",
-    "typescript": "5.1.6"
+    "typescript": "^5.1.6"
   }
 }

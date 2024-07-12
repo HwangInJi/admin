@@ -62,6 +62,7 @@ export const productSampleItems = [
     createdAt: dayjs("2023-02-02T15:00:00+09:00"),
     updatedAt: dayjs("2023-02-02T15:00:00+09:00"),
   },
+  
 ];
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
