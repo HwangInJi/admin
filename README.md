@@ -240,3 +240,11 @@ API와 관련된 코드와 Type을 관리합니다.
 ## Author
 
 - subicura ([@subicura](https://twitter.com/subicura))
+
+## 트러블슈팅
+
+1. JSON파일 데이터 Vercel에 로딩이 되지 않은 문제
+
+- 해결방안
+(1) 'pnpm install'가 설치되지 않아 설치 진행하였지만 설치가 되지 않아 'npm install -g pnpm'를 먼저 시행하여 설치 진행
+(2) 설치를 하고나면 'pnpm -v'를 입력하여 제대로 설치되었는 지 버전 확인 후 다시 'pnpm install' 설치 진행하여 문제 해결
