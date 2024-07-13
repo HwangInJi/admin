@@ -78,9 +78,10 @@ const ProductList = () => {
     {
       title: "업체주소",
       dataIndex: "addresses",
+      width:400,
       render: (value: string, record: any) => {
         return (
-          <span className="w-4/12">
+          <span>
             {/* <span className="px-2 py-1 mr-1 bg-gray-100 rounded"></span> */}
             <span>{value}</span>
           </span>
