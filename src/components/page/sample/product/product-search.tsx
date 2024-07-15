@@ -11,9 +11,8 @@ import React, { useCallback } from "react";
 
 const statusOptions = [
   { label: "전체", value: "ALL" },
-  { label: "판매중", value: "SALE" },
-  { label: "품절", value: "SOLDOUT" },
-  { label: "판매중단", value: "NOTSALE" },
+  { label: "영업중", value: "SALE" },
+  { label: "영업중단", value: "NOTSALE" },
 ];
 
 const ProductSearch = () => {
@@ -22,9 +21,14 @@ const ProductSearch = () => {
 
   const handleFinish = useCallback(
     (formValue: IProductFormValue) => {
+      const searchParams = {
+        ...router.query,
+        ...formValue,
+        page: 1, // 검색 시 첫 페이지로 이동
+      };
       router.push({
         pathname: router.pathname,
-        query: { ...router.query, ...formValue },
+        query: searchParams,
       });
     },
     [router]
@@ -53,8 +57,8 @@ const ProductSearch = () => {
           <FieldInline>
             <Form.Item label="검색조건" name="searchType" initialValue="productName">
               <Select dropdownMatchSelectWidth={false}>
-                <Select.Option value="productName">상품명</Select.Option>
-                <Select.Option value="brandName">브랜드명</Select.Option>
+                <Select.Option value="productName">업체명</Select.Option>
+                <Select.Option value="brandName">업체주소</Select.Option>
               </Select>
             </Form.Item>
             <Form.Item name="searchText" className="grow">
@@ -72,7 +76,7 @@ const ProductSearch = () => {
         <Button htmlType="submit" className="btn-with-icon" icon={<Search />}>
           검색
         </Button>
-        <Button htmlType="submit" className="btn-with-icon" onClick={() => form.resetFields()}>
+        <Button className="btn-with-icon" onClick={() => form.resetFields()}>
           초기화
         </Button>
       </div>

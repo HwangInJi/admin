@@ -7,15 +7,32 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import numeral from "numeral";
 import React, { useCallback, useMemo, useState } from "react";
-import productData from '../../../../pages/api/sample/products/nail_shops.json'; // JSON 데이터 가져오기
+import productData from "../../../../pages/api/sample/products/nail_shops.json"; // JSON 데이터 가져오기
 
 const ProductList = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
 
+  const { searchType, searchText } = router.query;
+
   // JSON 데이터를 items와 totalCount로 분리
-  const items = productData;
-  const totalCount = productData.length;
+  const filteredItems = useMemo(() => {
+    return productData.filter((item) => {
+      if (!searchType || !searchText) return true;
+      if (searchType === "productName") {
+        return item.title.includes(searchText);
+      }
+      if (searchType === "brandName") {
+        if (typeof item.addresses === "string") {
+          return item.addresses.includes(searchText);
+        }
+        return false;
+      }
+      return true;
+    });
+  }, [searchType, searchText]);
+
+  const totalCount = filteredItems.length;
 
   const handleChangePage = useCallback(
     (pageNumber: number) => {
@@ -78,14 +95,9 @@ const ProductList = () => {
     {
       title: "업체주소",
       dataIndex: "addresses",
-      width:400,
-      render: (value: string, record: any) => {
-        return (
-          <span>
-            {/* <span className="px-2 py-1 mr-1 bg-gray-100 rounded"></span> */}
-            <span>{value}</span>
-          </span>
-        );
+      width: 400,
+      render: (addresses: string) => {
+        return <div>{addresses}</div>;
       },
     },
     {
@@ -117,28 +129,12 @@ const ProductList = () => {
       dataIndex: "x",
       align: "center",
       width: 120,
-      // render: (value: string) => {
-      //   return (
-      //     <div className="text-sm">
-      //       <span className="block">{value ? dayjs(value).format("YYYY/MM/DD") : "N/A"}</span>
-      //       <span className="block">{value ? dayjs(value).format("hh:mm") : "N/A"}</span>
-      //     </div>
-      //   );
-      // },
     },
     {
       title: "Y좌표",
       dataIndex: "y",
       align: "center",
       width: 120,
-      // render: (value: string) => {
-      //   return (
-      //     <div className="text-sm">
-      //       <span className="block">{value ? dayjs(value).format("YYYY/MM/DD") : "N/A"}</span>
-      //       <span className="block">{value ? dayjs(value).format("hh:mm") : "N/A"}</span>
-      //     </div>
-      //   );
-      // },
     },
   ];
 
@@ -149,10 +145,8 @@ const ProductList = () => {
           <Dropdown disabled={!hasSelected} menu={{ items: modifyDropdownItems }} trigger={["click"]}>
             <Button>일괄수정</Button>
           </Dropdown>
-
           <span style={{ marginLeft: 8 }}>{hasSelected ? `${selectedRowKeys.length}건 선택` : ""}</span>
         </div>
-
         <div className="flex-item-list">
           <Button className="btn-with-icon" icon={<Download />}>
             엑셀 다운로드
@@ -166,7 +160,7 @@ const ProductList = () => {
       <DefaultTable<any>
         rowSelection={rowSelection}
         columns={columns}
-        dataSource={items}
+        dataSource={filteredItems}
         pagination={{
           current: Number(router.query.page || 1),
           defaultPageSize: 50,
